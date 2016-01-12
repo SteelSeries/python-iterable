@@ -110,16 +110,15 @@ class List(IterableObject):
 
 class Workflow(IterableObject):
 
-    def __init__(self, id, data_fields=None):
+    def __init__(self, id):
         self.id = id
-        self.data_fields = data_fields or {}
 
     @classmethod
     def retrieve(cls, id):
         instance = cls(id)
         return instance
 
-    def trigger(self, email=None, list_id=None):
+    def trigger(self, email=None, list_id=None, data_fields=None):
         if not (email or list_id):
             raise error.APIError('Must provide an email or a list_id to trigger a workflow')
 
@@ -132,8 +131,8 @@ class Workflow(IterableObject):
         if list_id:
             request_obj['listId'] = list_id
 
-        if self.data_fields:
-            request_obj['dataFields'] = self.data_fields
+        if data_fields:
+            request_obj['dataFields'] = data_fields
 
         requestor.request('post', self.get_url('trigger_workflow'), request_obj)
 

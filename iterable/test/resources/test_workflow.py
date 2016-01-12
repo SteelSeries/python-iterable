@@ -46,8 +46,7 @@ class WorkflowTest(IterableApiTestCase):
             ]
         }
 
-        workflow.data_fields = data_fields
-        workflow.trigger(email='test@test.com')
+        workflow.trigger(email='test@test.com', data_fields=data_fields)
 
         self.requestor_mock.request.assert_called_with(
             'post', iterable.api_base + 'workflows/triggerWorkflow', {'workflowId': 1, 'email': 'test@test.com', 'dataFields': data_fields})
