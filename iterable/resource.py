@@ -2,6 +2,7 @@ import iterable
 
 from requests.compat import urljoin
 
+import error
 from .api_requestor import APIRequestor
 
 
@@ -12,6 +13,7 @@ class IterableObject(object):
         'user': 'users/get',
 
         # lists
+        'lists': 'lists',
         'subscribe': 'lists/subscribe',
         'unsubscribe': 'lists/unsubscribe',
 
@@ -29,10 +31,10 @@ class IterableObject(object):
 
 class User(IterableObject):
 
-    def __init__(self, email):
+    def __init__(self, email, id=None, data_fields=None):
         self.email = email
-        self.id = None
-        self.data_fields = {}
+        self.id = id
+        self.data_fields = data_fields or {}
 
     @classmethod
     def retrieve(cls, email):
@@ -71,6 +73,41 @@ class User(IterableObject):
         }
 
 
+class List(IterableObject):
+
+    def __init__(self, id, name=None, size=None):
+        self.id = id
+        self.name = name
+        self.size = size
+
+    @classmethod
+    def all(cls):
+        requestor = APIRequestor()
+        response = requestor.request('get', cls.get_url('lists'), root_field='lists')
+        return [List(**x) for x in response]
+
+    @classmethod
+    def retrieve(cls, id):
+        instance = cls(id)
+        instance.refresh()
+        return instance
+
+    def refresh(self):
+        requestor = APIRequestor()
+        response = requestor.request('get', self.get_url('lists'), root_field='lists')
+        self.refresh_from(response)
+        return self
+
+    def refresh_from(self, values):
+        for l in values:
+            if l.get('id') == self.id:
+                self.name = l.get('name')
+                self.size = l.get('size')
+                return
+
+        raise error.APIError('List with id %s does not exist.' % (self.id, ))
+
+
 class Workflow(IterableObject):
 
     def __init__(self, id, data_fields=None):
@@ -83,6 +120,9 @@ class Workflow(IterableObject):
         return instance
 
     def trigger(self, email=None, list_id=None):
+        if not (email or list_id):
+            raise error.APIError('Must provide an email or a list_id to trigger a workflow')
+
         requestor = APIRequestor()
         request_obj = {'workflowId': self.id}
 
@@ -124,3 +164,5 @@ class Commerce(IterableObject):
 
         requestor = APIRequestor()
         requestor.request('post', cls.get_url('track_purchase'), request_obj)
+
+        return True

@@ -8,6 +8,7 @@ api_base = 'https://api.iterable.com/api/'
 
 from iterable.resource import (
     Commerce,
+    List,
     User,
     Workflow,
 )
