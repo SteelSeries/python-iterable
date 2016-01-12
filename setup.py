@@ -3,7 +3,7 @@ from distutils.core import setup
 
 setup(
     name='iterable',
-    version='0.1.0',
+    version='0.1',
     description='Iterable python bindings',
     author='SteelSeries',
     author_email='eric.burns@steelseries.com',
