@@ -1,2 +1,15 @@
-# Python
+.DS_Store
+.python-version
+._*
 *.pyc
+*.egg-info
+/docs/_build/
+/.coverage
+/.coverage.xml
+/htmlcov
+/.tox
+/.cache
+dist/
+.idea
+build/
+.eggs/

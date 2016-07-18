@@ -1,3 +1,18 @@
+"""
+python-iterable
+--------------
+Iterable API python client.
+:copyright: (c) 2016 by SteelSeries
+:license: MIT. See LICENSE for more details
+"""
+
+__title__ = 'iterable'
+__version__ = '0.0.1'
+__author__ = 'Eric Burns'
+__license__ = 'MIT'
+__copyright__ = 'Copyright 2016 SteelSeries'
+
+
 # Configuration variables
 
 api_key = None
